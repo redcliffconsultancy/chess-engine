@@ -23,18 +23,41 @@ func clearBit(n uint64, pos int) uint64 {
 	return n
 }
 
+func moveLeft(n uint64, pos int) uint64 {
+	n |= (1 << pos)
+	return n
+}
+
+func moveRight(n uint64, pos int) uint64 {
+	n |= (1 << pos)
+	return n
+}
+
+func moveForward(n uint64, pos int) uint64 {
+	n |= (8 << pos)
+	return n
+}
+
+func moveBackwards(n uint64, pos int) uint64 {
+	n |= (8 >> pos)
+	return n
+}
+
 func main() {
-	// the board
-	// 64 spaces - 1 to 64
-	// or an 8x8 array
-	bitBoard := setBit(bitBoard, 6)
+	bitBoard := setBit(bitBoard, 32)
 	fmt.Println(strconv.FormatUint(bitBoard, 2))
 
-	bitBoard = setBit(bitBoard, 7)
+	bitBoard = moveLeft(bitBoard, 32)
 	fmt.Println(strconv.FormatUint(bitBoard, 2))
+	// bitBoard = setBit(bitBoard, 7)
+	// fmt.Println(strconv.FormatUint(bitBoard, 2))
+	// bitBoard = setBit(bitBoard, 7)
+	// fmt.Println(strconv.FormatUint(bitBoard, 2))
+	// bitBoard = setBit(bitBoard, 7)
+	// fmt.Println(strconv.FormatUint(bitBoard, 2))
 
-	bitBoard = clearBit(bitBoard, 6)
-	fmt.Println(strconv.FormatUint(bitBoard, 2))
+	// bitBoard = clearBit(bitBoard, 6)
+	// fmt.Println(strconv.FormatUint(bitBoard, 2))
 }
 
 // all pieces take up one space in the array
