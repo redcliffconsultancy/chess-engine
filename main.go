@@ -18,10 +18,17 @@ func main() {
 		panic(err)
 	}
 
-	createSTArray(data)
+	charsRev := createSTArray(data)
+	var charsDecoded = make([]string, 24)
+	for i := 0; i < len(charsRev); i++ {
+		charsDecoded[i] = ascii6bit.LookupRpMax(charsRev[i])
+	}
+	fmt.Printf("%s\n", charsDecoded[:])
+
 }
 
-// returns the value of bit position b from the data
+// Returns a bit value from the provided data byte array,
+// where bit 0 is the MSB of the first byte.
 func getBitValue(data []byte, b int) bool {
 	bytePosition := int(float32(b) / 8)
 	bitPosition := int((float32(b)/8 - float32(bytePosition)) * 8)
@@ -29,8 +36,11 @@ func getBitValue(data []byte, b int) bool {
 	return (data[bytePosition] & mask) != 0
 }
 
-func createSTArray(data []byte) {
-	// Create a new slice of 144 bits (or 24 bytes)
+// Create a new slice of 144 bits (or 18 bytes)
+// The slice is created in two parts from the provided data
+// Firstly taking the bits 0-111 (14 bytes)
+// Secondly taking bits 116-149 (4 bytes)
+func createSTArray(data []byte) []byte {
 	var count float64 = 0
 	var index int
 	var STArray = make([]byte, 24)
@@ -47,5 +57,5 @@ func createSTArray(data []byte) {
 		}
 
 	}
-	fmt.Println(STArray)
+	return STArray
 }

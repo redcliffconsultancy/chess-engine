@@ -35,7 +35,7 @@ func DecodeHexString(hexString string) []string {
 	// Lookup each byte against the lookup table.
 	var charsDecoded = make([]string, numChars)
 	for i := 0; i < len(charsRev); i++ {
-		charsDecoded[i] = lookupRpMax(charsRev[i])
+		charsDecoded[i] = LookupRpMax(charsRev[i])
 	}
 	return charsDecoded[:]
 
@@ -58,7 +58,7 @@ func reverseByteOrder(ba []byte) []byte {
 	return ba
 }
 
-func lookupRpMax(val uint8) string {
+func LookupRpMax(val uint8) string {
 	rpMaxRegisters := map[uint8]string{
 		0x00: "null",
 		0x01: "A",
