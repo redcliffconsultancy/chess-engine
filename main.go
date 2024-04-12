@@ -1,61 +1,48 @@
 package main
 
 import (
+	"encoding/binary"
 	"encoding/hex"
-	"example/ascii6bit"
 	"fmt"
-	"math"
-	"math/bits"
 )
 
 func main() {
-	hexString := "553A6C"
-	decodedHexString := ascii6bit.DecodeHexString(hexString)
-	fmt.Printf("%s\n", decodedHexString[:])
+	// Heres a 120-bit sequence represented as a hexidecimal string
+	// Let decode the hex string into bytes
+	input := "1234567890abcdef1a2b3c4d5e6f70"
+	inputArray, _ := hex.DecodeString(input)
+	fmt.Println(len(inputArray))
+	fmt.Println(inputArray)
+	fmt.Println()
 
-	data, err := hex.DecodeString(hexString)
-	if err != nil {
-		panic(err)
-	}
+	// Lets create some registers based on the inputArray
+	// all 80 bits in length
+	wRegister := append(inputArray[0:5], inputArray[0:5]...)
+	xRegister := inputArray[5:15]
+	yRegister := make([]byte, 10)
+	zRegister := append(inputArray[10:15], inputArray[0:5]...)
+	fmt.Println(wRegister)
+	fmt.Println(xRegister)
+	fmt.Println(yRegister)
+	fmt.Println(zRegister)
+	fmt.Println()
 
-	charsRev := createSTArray(data)
-	var charsDecoded = make([]string, 24)
-	for i := 0; i < len(charsRev); i++ {
-		charsDecoded[i] = ascii6bit.LookupRpMax(charsRev[i])
-	}
-	fmt.Printf("%s\n", charsDecoded[:])
+	// What's the biggest number with can store as a uint64 data type
+	number := uint64(18446744073709551615)
+	fmt.Printf("Here's a big number: %d\n", number)
+	fmt.Printf("Is this possible: %d\n", number-1)
+	fmt.Printf("Is this possible: %d\n", number+1)
 
-}
+	// Let's represent this as 7 bytes. i.e. 7x8=56bits
+	hiBytes := append([]byte{0, 0, 0}, inputArray[0:5]...)
+	loBytes := append([]byte{0, 0, 0}, inputArray[5:10]...)
+	loNumber := binary.BigEndian.Uint64(loBytes)
+	hiNumber := binary.BigEndian.Uint64(hiBytes)
 
-// Returns a bit value from the provided data byte array,
-// where bit 0 is the MSB of the first byte.
-func getBitValue(data []byte, b int) bool {
-	bytePosition := int(float32(b) / 8)
-	bitPosition := int((float32(b)/8 - float32(bytePosition)) * 8)
-	mask := bits.Reverse8(byte(math.Pow(2, float64(bitPosition))))
-	return (data[bytePosition] & mask) != 0
-}
+	// Let's print out some results
 
-// Create a new slice of 144 bits (or 18 bytes)
-// The slice is created in two parts from the provided data
-// Firstly taking the bits 0-111 (14 bytes)
-// Secondly taking bits 116-149 (4 bytes)
-func createSTArray(data []byte) []byte {
-	var count float64 = 0
-	var index int
-	var STArray = make([]byte, 24)
-	for i := 0; i < 24; i++ {
-		index = i / 6
-		bv := getBitValue(data, i)
-		mask := bits.Reverse8(byte(math.Pow(2, count)))
-		if bv {
-			STArray[index] = STArray[index] | byte(mask)>>2
-		}
-		count = count + 1
-		if count == 6 {
-			count = 0
-		}
-
-	}
-	return STArray
+	fmt.Printf("\n%v \n", loBytes)
+	fmt.Printf("%v\n", hiBytes)
+	fmt.Printf("Here's the max 40 bit number: %d\n", loNumber)
+	fmt.Printf("Here's the max 40 bit number: %d\n", hiNumber)
 }
